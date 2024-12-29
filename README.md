@@ -19,7 +19,6 @@ O objetivo deste projeto é identificar transações fraudulentas em um conjunto
 - **PyCaret**: Biblioteca de AutoML para treinamento do modelo de Machine Learning.
 - **Streamlit**: Framework para criar a interface interativa.
 - **pandas**: Manipulação e análise de dados.
-- **requests**: Biblioteca para baixar o arquivo CSV diretamente do Google Drive.
 
 ## 🚀 Como Rodar o Projeto
 
@@ -28,6 +27,15 @@ O objetivo deste projeto é identificar transações fraudulentas em um conjunto
 ```bash
 git clone https://github.com-mariogomes23/CreditCardFraudDetection.git
 cd CreditCardFraudDetection
+
+
+
+### 2. Rodar o projecto:
+
+```bash
+python -m venv venv
+pip install -r requirements
+
 
 
 
