@@ -1,77 +1,43 @@
-# Importando as bibliotecas necessárias
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import classification_report, accuracy_score
-from sklearn.ensemble import IsolationForest
-from sklearn.svm import OneClassSVM
 
-# Evitar uso de Tkinter no Matplotlib
 import matplotlib
-matplotlib.use('Agg')  # Backend para evitar problemas com tkinter
+import sys
+import os
 
-# Carregando o arquivo CSV
-# Certifique-se de que o arquivo 'creditcard.csv' está na raiz do projeto
-df = pd.read_csv('creditcard.csv')
+from config import Config
+from data.data_loader import load_data
+from data.pre_processor import preprocess_data
+from data.visualizer import plot_class_distribution, plot_transaction_distribution
+from models.isolation_forest import IsolationForestModel
+from models.one_class_svm import OneClassSVMModel
+from models.metrics import generate_classification_report
 
-# Visualizando as primeiras linhas do dataset
-print(df.head())
+matplotlib.use('Agg')  # Define o backend para um que não depende de GUI
 
-# Verificando o tamanho do dataset
-print(f"Dimensão do dataset: {df.shape}")
+# Adicionar o diretório 'src' ao caminho do Python
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Verificando valores ausentes
-print(f"Valores ausentes por coluna:\n{df.isnull().sum()}")
 
-# Distribuição das classes (0: Normal, 1: Fraude)
-fraud_check = df['Class'].value_counts(sort=True)
-fraud_check.plot(kind='bar', rot=0, color='r')
-plt.title("Distribuição de Transações Normais e Fraudes")
-plt.xlabel("Classe")
-plt.ylabel("Frequência")
-labels = ['Normal', 'Fraude']
-plt.xticks(range(2), labels)
-plt.savefig('class_distribution.png')  # Salva o gráfico como imagem
-plt.close()
+if __name__ == "__main__":
+    # Carregar dados
+    df = load_data(Config.DATA_PATH)
 
-# Separando as transações fraudulentas e normais
-fraud_transactions = df[df['Class'] == 1]
-normal_transactions = df[df['Class'] == 0]
+    # Pré-processamento
+    df = preprocess_data(df)
 
-# Exibindo o número de transações fraudulentas e normais
-print(f"Transações fraudulentas: {fraud_transactions.shape[0]}")
-print(f"Transações normais: {normal_transactions.shape[0]}")
+    # Visualização
+    plot_class_distribution(df, save_path=Config.OUTPUT_PATH)
+    plot_transaction_distribution(df, save_path=Config.OUTPUT_PATH)
 
-# Estatísticas descritivas para o valor das transações
-print("Estatísticas - Transações fraudulentas:")
-print(fraud_transactions['Amount'].describe())
+    # Treinar e avaliar modelos
+    isolation_forest_model = IsolationForestModel()
+    df['Anomaly_Score'] = isolation_forest_model.train_and_predict(df)
 
-print("Estatísticas - Transações normais:")
-print(normal_transactions['Amount'].describe())
+    svm_model = OneClassSVMModel()
+    df['SVM_Score'] = svm_model.train_and_predict(df)
 
-# Visualização da distribuição do valor das transações
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-sns.histplot(fraud_transactions['Amount'], bins=50, ax=ax1, color='red', kde=True)
-ax1.set_title('Distribuição do Valor - Fraude')
-sns.histplot(normal_transactions['Amount'], bins=50, ax=ax2, color='blue', kde=True)
-ax2.set_title('Distribuição do Valor - Normal')
-plt.xlabel("Valor da Transação")
-plt.savefig('transaction_amount_distribution.png')  # Salva o gráfico como imagem
-plt.close()
+    # Relatórios
+    print("Relatório de Classificação - Isolation Forest:")
+    print(generate_classification_report(df['Class'], df['Anomaly_Score'] == -1))
 
-# Aplicação de Isolation Forest para detecção de anomalias
-isolation_forest = IsolationForest(n_estimators=100, contamination=0.01, random_state=42)
-df['Anomaly_Score'] = isolation_forest.fit_predict(df.drop('Class', axis=1))
-
-# Exibindo relatório de classificação baseado no modelo
-print("Relatório de Classificação - Isolation Forest:")
-print(classification_report(df['Class'], df['Anomaly_Score'] == -1))
-
-# Aplicação de One-Class SVM
-oc_svm = OneClassSVM(kernel='rbf', gamma=0.1, nu=0.01)
-df['SVM_Score'] = oc_svm.fit_predict(df.drop('Class', axis=1))
-
-# Exibindo relatório de classificação para SVM
-print("Relatório de Classificação - One-Class SVM:")
-print(classification_report(df['Class'], df['SVM_Score'] == -1))
+    print("Relatório de Classificação - One-Class SVM:")
+    print(generate_classification_report(df['Class'], df['SVM_Score'] == -1))
