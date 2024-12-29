@@ -1,3 +1,5 @@
 venv
 .venv
 creditcard.csv
+.gitattributes
+creditcard.csv
