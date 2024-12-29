@@ -1,34 +1,29 @@
-# Detecção de Fraudes em Transações de Cartão de Crédito
+# Detecção de Fraudes em Cartões de Crédito 🏦💳
 
-Este projeto utiliza técnicas de aprendizado de máquina para detectar fraudes em transações financeiras de cartão de crédito. O foco principal é a **detecção de anomalias**, utilizando modelos como o **Isolation Forest** e o **One-Class SVM**. O objetivo é identificar transações suspeitas (fraudulentas) a partir de um conjunto de dados contendo transações normais e fraudulentas.
+Este projeto é uma demonstração de detecção de fraudes em transações de cartão de crédito utilizando o **PyCaret**, uma poderosa ferramenta de AutoML. A aplicação é construída com **Streamlit** para criar uma interface interativa que permite aos usuários explorar e visualizar os dados de forma prática e dinâmica.
 
-## Índice
+## 📝 Descrição do Projeto
 
-- [Visão Geral](#visão-geral)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Requisitos](#requisitos)
-- [Como Executar](#como-executar)
-- [Saídas](#saídas)
-- [Relatórios de Desempenho](#relatórios-de-desempenho)
-- [Contribuições](#contribuições)
-- [Licença](#licença)
+O objetivo deste projeto é identificar transações fraudulentas em um conjunto de dados de cartões de crédito, aplicando técnicas de Machine Learning automatizadas. A interface em **Streamlit** permite a visualização das primeiras linhas dos dados, facilitando a interação com o modelo de detecção de fraudes.
 
-## Visão Geral
+### Funcionalidades:
+- Carregamento de dados diretamente do Google Drive.
+- Análise e visualização das primeiras linhas do dataset.
+- Utilização do PyCaret para treinamento e predição do modelo de detecção de fraudes.
+- Exibição interativa dos resultados no **Streamlit**.
 
-O dataset utilizado é composto por transações de cartão de crédito, com a variável `Class` indicando se uma transação é normal (0) ou fraudulenta (1). O código aplica dois modelos para detecção de fraudes:
+## 🔧 Tecnologias Utilizadas
 
-1. **Isolation Forest**: Um modelo baseado em árvores de decisão para detecção de anomalias.
-2. **One-Class SVM**: Um modelo baseado em máquinas de vetores de suporte para identificar padrões atípicos.
+- **Python**: Linguagem de programação utilizada no desenvolvimento do modelo.
+- **PyCaret**: Biblioteca de AutoML para treinamento do modelo de Machine Learning.
+- **Streamlit**: Framework para criar a interface interativa.
+- **pandas**: Manipulação e análise de dados.
+- **requests**: Biblioteca para baixar o arquivo CSV diretamente do Google Drive.
 
-Além da detecção de fraudes, o código também gera visualizações que ajudam a entender a distribuição das transações e os valores das transações.
+## 🚀 Como Rodar o Projeto
 
-## Estrutura do Projeto
+### 1. Clone o repositório:
 
 ```bash
-- src/
-  - app.py              # Código principal do projeto
-  - data/
-    - creditcard.csv    # Dataset de transações de cartão de crédito (necessário para execução)
-  - output/
-    - class_distribution.png  # Gráfico de distribuição das classes (normais vs fraudulentas)
-    - transaction_amount_distribution.png  # Gráfico de distribuição do valor das transações
+git clone https://github.com/seu-usuario/detecao-de-fraudes.git
+cd detecao-de-fraudes
